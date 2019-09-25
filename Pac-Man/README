@@ -1,0 +1,62 @@
+	 Task1:
+ Ideea de rezolvare se bazeaza pe triangularea superioara a unei matrice patratica. Astfel, in caz ca ne aflam sub diagonala principala (i<j) se vor afisa doua spatii, in caz negativ (i>=j, pe/deasupra diagonalei principale) caracterul introdus urmat de spatiu.
+ Se afisaza doua spatii deoarece sub diagonala secundara trebuie sa fie spatiu atat sub caracter cat si sub spatiul de langa caracter. 
+ In cazul in care indicii se afla pe ultima linie si deasupra diagonalei principale, caracterul va fi afisat fara spatiul de dupa.
+ Variabilele folosite sunt numarul de caractere de pe prima linie (N) tipul de caracter (C) si indicii pentru parcurger folosind doua functii for.
+
+	Pacman:
+ Programul este alcatuit din doua functii secundare (tabla, miscare) si functia main.
+   Functia "tabla":
+ Este o functie de tip void, care primeste ca parametri dimensiunea tablei, coordonatele jucatorului, tipul mutarii si coordonatele obstacolelor. Functia nu primeste informatii despre tipul obstacolelor, numarul lor sau despre numarul mutarii, deoarece afisarea este independeta de acestea. Daca numarul de obstacole este mai mic decat numarul maxim, variabilele corespunzatoare obstacolelor neitilizate primesc valori ce nu influenteaza functia de afisare.
+ Afisarea se face de la 0 la N+1/M+1 (precum o matrice unde i reprezinta linia si j coloana) astfel:
+-linia/coloana 0 si N+1/M+1 reprezinta marginea tablei de joc, unde se va insera caracterul "*";
+-dimensiunea tablei este depasita cu 2 pozitii(de la 0 la N-1 = pozitia data de utilizator, N, N+1 pozitiile suplimentare folosite pentru delimitare), astfel spatiul ramas in interiorul delimitarii este egal cu dimensiunea citita;
+-in cazul in care, indicii(i j) nu se afla pe una dintre margini (0 sau N+1/M+1), atunci:
+	a) Daca indicii sunt egali cu coordonatele jucatorului se afiseaza tipul mutarii ( v > < ^)
+	b) Daca indicii sunt egali cu coordonatele obstacolului se afisaza caracterul "x"
+	c) Daca niciuna dintre acestea nu este adevarata, se afiseaza caracterul " "
+- la sfarsitul coloanelor, se trece la urmatoare linie (creste indecele i), "\n"
+-toatea acestea se fac prin intermediul a doua for-uri ce parcurg fiecare pozitie din tabla si afiseaza caracterul potrivit pozitiei respective.
+   
+   Functia "miscare":
+ Rolul functiei este de a deplasa un obstacol mobil, alegand cel mai scurt drum catre jucator, din 8 directii posibile. Pentru aceasta, functia primeste ca parametri: coordonatele jucatorului si coordonatele obstacolului (ca pointeri pentru ca modificarile facute in functie sa fie vizibile si in functia main). Functia nu returneaza si nici nu afiseaza nimic, deoarece rolul ei este doar de a modificea coordonatele obstacolului, pe care le primeste. 
+ Alegerea directiei pentru ca aceasta sa fie si minima se face astfel:
+- Daca obstacolul se afla pe aceeasi linie cu jucatorul, atunci acesta nu trebuie sa isi modifice linia (deci posibilitatea de a merge in diagonala dispare, precum si cea de a se deplasa pe linie), cea mai eficenta metoda fiind sa isi modifice coloana pentru a se apropia de jucator:
+	a) Daca coloana jucatorului este mai mare, inseamna ca obstacolul se afla in stanga, deci se va deplasa la dreapta prin cresterea coloanei.
+	b) Daca coloana jucatorului este mai mica, inseamna ca obstacolul se afla in dreapta (suntem in cazul de linie_Jucator=linie_Obstacol), deci se va deplasa in stanga prin scaderea coloanei.
+	c) Daca si coloanele sunt egale, functia nu face nimic, urmand sa fie verificata in main aceasta situatie.
+-Analog pentru coloana Jucator = coloana Obstacol, daca obstacolul este sub jucator (linie jucator < linie obstacol) linia obstacolului va scadea, iar daca este deasupra (linie jucator > linie obstacol) va creste.
+- In urma acestor teste, au fost verificate 4 posibile mutari, cele mai avantajoase din punct de vedere al drumului minim.    
+- In cazul in care coloana sau linia jucatorului nu mai sunt egale cu cele ale obstacolului, inseamna ca va fi nevoie de o micare pe una din diagonale:
+	a) Daca obstacolul este in stanga sus fata de jucator(linie si coloana obstacol < linie si coloana jucator): se face deplasarea la dreapta prin cresterea coloanei si deplasarea in jos prin cresterea liniei.
+	b)Daca obstacolul este in dreapta sus fata de jucator (coloana Obstacol > coloana Jucator si linia Obstacol < linia Jucator): se face deplasarea la stanga prin scaderea coloanei si in jos prin cresterea liniei.
+	c) Daca obstacolul este in dreapta jos, fata de jucator(linie si coloana obstacol > linie si coloana jucator): se face deplasarea la stanga prin scaderea coloanei si in sus prin scaderea liniei.
+	d) Daca obstacolul este in stanga jos, fata de jucator(coloana obstacol < coloana jucator si linie obstacol > linie jucator): se face deplasarea la dreapta prin cresterea coloanei si in sus prin scaderea liniei. 
+-Prin testarea prima data a liniei/coloanei jucatorului si obstacolului daca coincid, distanta are valoare minima. Daca acestea ar coincide si s-ar deplasa pe diagonala, atunci distanta dintre ele s-ar mari conform formulei F=|l_jucator-l_obst|+|c_jucator-c_obst|. Ex:
+jucator: l=4 c=3                        
+obstacol: l=4 c=5
+lJucator=lOstacol => cOstacol-=1 => cObstacol=4 => F=0+1=1
+Dar daca se deplaseaza pe diagonala => cObstacol devine 4 sau 6, iar l devine 3 sau 5, oricare dintre combinatii rezultand un F mai mare(doarece primul modul va fi >0 : F=2 pentru stanga sus, F=3 pentru dreapta sus, F=2 pentru stanga jos, F=4 dreapta jos)
+
+
+	Functia "main":
+  Functia main contine declararea variabilelor, atribuiri si citirea valorilor precum si:
+- stabilirea numarului de obstacole si citirea coordonatelor si tipul acestora, variabilele declarate pentru obstacole care nu sunt folosite primesc valori ce nu vor influenta programul.
+- afisarea initiala a tablei cu toate elementele si jucatorul sub forma de 'v'(apelarea functiei tabla).
+	>Apelul functiilor de mai sus se realizeaza in interiorul unei functii while, ce verifica la fiecare pas daca jucatorul a ajuns in coltul din dreapta pentru a fi declarat castigator:		
+	>Citirea caracterului de miscare, iar in functie de caracterul introdus si daca mutarea e valida(daca este in tabla) se modifica valoarea coordonatelor axei pe care s-a facut miscarea (a,d=OX;w,s=OY) precum si caracterul de miscare('^'=w=sus=lJucator+=1; 'v'=s=jos=lJucator-=1; '>'=d=dreapta=cJucator+=1; '<'=a=stanga=cJucator-=1). In cazul apasarii tastei 'q' programul returneaza 0 si se opreste.
+	>Incrementarea contorului pentru a tine evidenta mutarii in vederea deplasarii obstacolelor mobile. Aceasta trebuie crescut indiferent daca mutarea a fost valida sau nu.
+	>In cazul in care contorul este par iar obstacolul este de tip 'm'(mobil) se apeleaza functia de miscare cu coordonatele obstacolelor trimise prin adresa (&). Pentru fiecare obstacol se apeleaza functia de miscare.
+	>In cazul in care are loc o coliziune intre jucator si obstacol, adica coordonatele acestora sunt egale, apare mesajul 'Game over' iar programul se incheie (return 0).   
+	>Daca coordonatele au fost diferite, se apeleaza functia de afisare.
+	>Programul se incheie:
+		a) Prin apasarea tastei 'q' : reutrn 0;
+		b) Prin coliziunea cu un obstacol: return 0;
+		c) Prin ajungerea in colt dreapta jos, moment in care iese din functia while si printeaza "Game completed", dupa care porgramul se incheie.
+
+Functiile au fost folosite pentru o mai usoara apelare a afisarii si a modificarii coordonatelor. (de ex: Pentru a nu scried e doua ori afisarea sau de trei ori miscarea)
+Numele variabilelor au fost schimbate in nume sugestive, pentru o usoara intelegere:
+	>x=lJucator; y=cJucator
+	>P=numarObstacole
+	>l=lObstacol; c=cObstacol
+	>m=tipObstacol
